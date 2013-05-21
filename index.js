@@ -5,7 +5,12 @@ module.exports = addWith
 function addWith(obj, src, exclude) {
   exclude = exclude || []
   var s = scope('(function () {' + src + '}())')//allows the `return` keyword
-  if (s.globals.implicit.length === 0) return src
+  vars = s.globals.implicit
+    .filter(function (v) {
+      return !(v in global) && exclude.indexOf(v) === -1
+    })
+
+  if (vars.length === 0) return src
 
   var declareLocal = ''
   var local = 'locals'
@@ -17,10 +22,7 @@ function addWith(obj, src, exclude) {
     }
     declareLocal = local + ' = (' + obj + '),'
   }
-  return 'var ' + declareLocal + s.globals.implicit
-    .filter(function (v) {
-      return !(v in global) && exclude.indexOf(v) === -1
-    })
+  return 'var ' + declareLocal + vars
     .map(function (v) {
       return v + ' = ' + local + '.' + v
     }).join(',') + ';' + src

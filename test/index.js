@@ -78,3 +78,17 @@ describe('addWith("obj || {}", "console.log(locals(a))", ["locals_"])', function
       })
   })
 })
+
+describe('addWith("obj || {}", "console.log(\'foo\')")', function () {
+  it('passes through', function (done) {
+    var src = addWith('obj || {}', 'console.log("foo")')
+    // console.log(\'foo\')
+    Function('console,obj', src)(
+      {
+        log: function (a) {
+          assert(a === 'foo')
+          done()
+        }
+      })
+  })
+})
