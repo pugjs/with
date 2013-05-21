@@ -1,0 +1,25 @@
+var scope = require('lexical-scope')
+
+module.exports = addWith
+
+function addWith(obj, src, exclude) {
+  exclude = exclude || []
+  var s = scope('(function () {' + src + '}())')//allows the `return` keyword
+  var declareLocal = ''
+  var local = 'locals'
+  if (/^[a-zA-Z0-9$_]+$/.test(obj)) {
+    local = obj
+  } else {
+    while (s.globals.implicit.indexOf(local) != -1 || s.globals.exported.indexOf(local) != -1 || exclude.indexOf(local) != -1  || obj.indexOf(local) != -1) {
+      local += '_'
+    }
+    declareLocal = local + ' = (' + obj + '),'
+  }
+  return 'var ' + declareLocal + s.globals.implicit
+    .filter(function (v) {
+      return !(v in global) && exclude.indexOf(v) === -1
+    })
+    .map(function (v) {
+      return v + ' = ' + local + '.' + v
+    }).join(',') + ';' + src
+}
