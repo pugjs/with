@@ -5,6 +5,8 @@ module.exports = addWith
 function addWith(obj, src, exclude) {
   exclude = exclude || []
   var s = scope('(function () {' + src + '}())')//allows the `return` keyword
+  if (s.globals.implicit.length === 0) return src
+
   var declareLocal = ''
   var local = 'locals'
   if (/^[a-zA-Z0-9$_]+$/.test(obj)) {
