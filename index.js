@@ -5,7 +5,7 @@ module.exports = addWith
 function addWith(obj, src, exclude) {
   exclude = exclude || []
   var s = scope('(function () {' + src + '}())')//allows the `return` keyword
-  vars = s.globals.implicit
+  var vars = s.globals.implicit
     .filter(function (v) {
       return !(v in global) && exclude.indexOf(v) === -1
     })
