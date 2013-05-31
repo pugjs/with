@@ -1,6 +1,6 @@
 {
   "name": "with",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Compile time `with` for strict mode JavaScript",
   "main": "index.js",
   "scripts": {
