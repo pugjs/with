@@ -4,6 +4,8 @@ module.exports = addWith
 
 function addWith(obj, src, exclude) {
   exclude = exclude || []
+  var objScope = scope(obj)
+  exclude = exclude.concat(objScope.globals.implicit).concat(objScope.globals.exported)
   var s = scope('(function () {' + src + '}())')//allows the `return` keyword
   var vars = s.globals.implicit
     .filter(function (v) {

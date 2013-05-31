@@ -96,7 +96,6 @@ describe('addWith("obj || {}", "console.log(\'foo\')")', function () {
 describe('addWith("obj || {}", "obj.foo")', function () {
   it('passes through', function (done) {
     var src = addWith('obj || {}', 'obj.bar = obj.foo')
-    console.dir(src)
     // obj.bar = obj.foo
     var obj = {
         foo: 'ding'
