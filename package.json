@@ -13,9 +13,9 @@
   "author": "ForbesLindesay",
   "license": "MIT",
   "dependencies": {
-    "uglify-js": "2.3.6"
+    "uglify-js": "2.4.0"
   },
   "devDependencies": {
-    "mocha": "~1.9.0"
+    "mocha": "~1.12.0"
   }
 }
