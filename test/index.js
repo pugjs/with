@@ -40,9 +40,9 @@ describe('addWith("obj || {}", "console.log(a)")', function () {
       })
   })
 })
-describe('addWith("obj", "console.log(helper(a))", ["helper"])', function () {
+describe('addWith("obj", "console.log(helper(a))")', function () {
   it('adds the necessary variable declarations', function (done) {
-    var src = addWith('obj', 'console.log(helper(a))', ['helper'])
+    var src = addWith('obj', 'console.log(helper(a))')
     // var a = obj.a;console.log(helper(a))
     Function('console,obj,helper', src)(
       {
@@ -58,9 +58,9 @@ describe('addWith("obj", "console.log(helper(a))", ["helper"])', function () {
       })
   })
 })
-describe('addWith("obj || {}", "console.log(locals(a))", ["locals_"])', function () {
+describe('addWith("obj || {}", "console.log(locals(a))")', function () {
   it('adds the necessary variable declarations', function (done) {
-    var src = addWith('obj || {}', 'console.log(locals(a))', ['locals_'])
+    var src = addWith('obj || {}', 'console.log(locals(a))')
     // var locals__ = (obj || {}),locals = locals__.locals,a = locals__.a;console.log(locals(a))
     Function('console,obj', src)(
       {
@@ -102,6 +102,28 @@ describe('addWith("obj || {}", "obj.foo")', function () {
       }
     Function('obj', src)(obj)
     assert(obj.bar === 'ding')
+    done()
+  })
+})
+
+describe('addWith("obj || {}", "return foo")', function () {
+  it('supports returning values', function (done) {
+    var src = addWith('obj || {}', 'return foo')
+    // obj.bar = obj.foo
+    var obj = {
+        foo: 'ding'
+      }
+    assert(Function('obj', src)(obj) === 'ding')
+    done()
+  })
+  it('supports returning undefined', function (done) {
+    var src = addWith('obj || {}', 'return foo')
+    assert(Function('obj', src + ';return "ding"')({}) === undefined)
+    done()
+  })
+  it('supports not actually returning', function (done) {
+    var src = addWith('obj || {}', 'if (false) return foo')
+    assert(Function('obj', src + ';return "ding"')({}) === 'ding')
     done()
   })
 })

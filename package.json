@@ -13,7 +13,7 @@
   "author": "ForbesLindesay",
   "license": "MIT",
   "dependencies": {
-    "uglify-js": "2.4.0"
+    "uglify-js": "~2.4.12"
   },
   "devDependencies": {
     "mocha": "~1.12.0"
