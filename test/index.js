@@ -127,3 +127,17 @@ describe('addWith("obj || {}", "return foo")', function () {
     done()
   })
 })
+
+describe('addWith("obj || {}", "return this[foo]")', function () {
+  it('keeps reference to this', function (done) {
+    var src = addWith('obj || {}', 'return this[foo]')
+    // obj.bar = obj.foo
+    var obj = {
+        foo: 'bar',
+        bar: 'ding',
+        fn: Function('obj', src)
+      }
+    assert(obj.fn(obj) === 'ding')
+    done()
+  })
+})
