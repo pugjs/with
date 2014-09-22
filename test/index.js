@@ -1,12 +1,16 @@
 var assert = require('assert')
-
+var fs = require('fs')
+var uglify = require('uglify-js')
 var addWith = require('../')
+
+var outputs = []
 
 var sentinel = {}
 var sentinel2 = {}
 describe('addWith("obj", "console.log(a)")', function () {
   it('adds the necessary variable declarations', function (done) {
     var src = addWith('obj', 'console.log(a)')
+    outputs.push(src)
     // var a = obj.a;console.log(a)
     Function('console,obj', src)(
       {
@@ -21,6 +25,7 @@ describe('addWith("obj", "console.log(a)")', function () {
 describe('addWith("obj || {}", "console.log(a)")', function () {
   it('adds the necessary variable declarations', function (done) {
     var src = addWith('obj || {}', 'console.log(a)')
+    outputs.push(src)
     // var locals = (obj || {}),a = locals.a;console.log(a)
     var expected = 2
     Function('console,obj', src)(
@@ -43,6 +48,7 @@ describe('addWith("obj || {}", "console.log(a)")', function () {
 describe('addWith("obj", "console.log(helper(a))")', function () {
   it('adds the necessary variable declarations', function (done) {
     var src = addWith('obj', 'console.log(helper(a))')
+    outputs.push(src)
     // var a = obj.a;console.log(helper(a))
     Function('console,obj,helper', src)(
       {
@@ -61,6 +67,7 @@ describe('addWith("obj", "console.log(helper(a))")', function () {
 describe('addWith("obj || {}", "console.log(locals(a))")', function () {
   it('adds the necessary variable declarations', function (done) {
     var src = addWith('obj || {}', 'console.log(locals(a))')
+    outputs.push(src)
     // var locals__ = (obj || {}),locals = locals__.locals,a = locals__.a;console.log(locals(a))
     Function('console,obj', src)(
       {
@@ -82,6 +89,7 @@ describe('addWith("obj || {}", "console.log(locals(a))")', function () {
 describe('addWith("obj || {}", "console.log(\'foo\')")', function () {
   it('passes through', function (done) {
     var src = addWith('obj || {}', 'console.log("foo")')
+    outputs.push(src)
     // console.log(\'foo\')
     Function('console,obj', src)(
       {
@@ -96,6 +104,7 @@ describe('addWith("obj || {}", "console.log(\'foo\')")', function () {
 describe('addWith("obj || {}", "obj.foo")', function () {
   it('passes through', function (done) {
     var src = addWith('obj || {}', 'obj.bar = obj.foo')
+    outputs.push(src)
     // obj.bar = obj.foo
     var obj = {
         foo: 'ding'
@@ -109,6 +118,7 @@ describe('addWith("obj || {}", "obj.foo")', function () {
 describe('addWith("obj || {}", "return foo")', function () {
   it('supports returning values', function (done) {
     var src = addWith('obj || {}', 'return foo')
+    outputs.push(src)
     // obj.bar = obj.foo
     var obj = {
         foo: 'ding'
@@ -118,11 +128,13 @@ describe('addWith("obj || {}", "return foo")', function () {
   })
   it('supports returning undefined', function (done) {
     var src = addWith('obj || {}', 'return foo')
+    outputs.push(src)
     assert(Function('obj', src + ';return "ding"')({}) === undefined)
     done()
   })
   it('supports not actually returning', function (done) {
     var src = addWith('obj || {}', 'if (false) return foo')
+    outputs.push(src)
     assert(Function('obj', src + ';return "ding"')({}) === 'ding')
     done()
   })
@@ -131,6 +143,7 @@ describe('addWith("obj || {}", "return foo")', function () {
 describe('addWith("obj || {}", "return this[foo]")', function () {
   it('keeps reference to this', function (done) {
     var src = addWith('obj || {}', 'return this[foo]')
+    outputs.push(src)
     // obj.bar = obj.foo
     var obj = {
         foo: 'bar',
@@ -140,4 +153,21 @@ describe('addWith("obj || {}", "return this[foo]")', function () {
     assert(obj.fn(obj) === 'ding')
     done()
   })
+})
+describe('addWith("obj", "var x = (y) => y + z; x(10);")', function () {
+  it('keeps reference to this', function (done) {
+    var src = addWith('obj', 'var x = (y) => y + z; x(10);')
+    outputs.push(src)
+    done()
+  })
+})
+after(function () {
+  function beautify(src) {
+    try {
+      return uglify.minify('function example() {' + src + '}', {fromString: true, mangle: false, compress: false, output: {beautify: true}}).code;
+    } catch (ex) {
+      return src;
+    }
+  }
+  fs.writeFileSync(__dirname + '/output.js', outputs.map(beautify).map(function (out, index) { return '// example-' + index + '\n\n' + out; }).join('\n\n\n'))
 })

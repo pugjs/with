@@ -1,6 +1,8 @@
 'use strict';
 
-var uglify = require('uglify-js')
+var detect = require('acorn-globals');
+var acorn = require('acorn');
+var walk = require('acorn/util/walk');
 
 module.exports = addWith
 
@@ -15,8 +17,8 @@ function addWith(obj, src, exclude) {
   obj = obj + ''
   src = src + ''
   exclude = exclude || []
-  exclude = exclude.concat(detect(obj))
-  var vars = detect(src)
+  exclude = exclude.concat(detect(obj).map(function (global) { return global.name; }))
+  var vars = detect(src).map(function (global) { return global.name; })
     .filter(function (v) {
       return exclude.indexOf(v) === -1
     })
@@ -52,21 +54,6 @@ function addWith(obj, src, exclude) {
 }
 
 /**
- * Detect, and return a list of, any global variables in a function
- *
- * @param {String} src Some JavaScript code
- */
-function detect(src) {
-    var ast = uglify.parse('(function () {' + src + '}())') // allow return keyword
-    ast.figure_out_scope()
-    var globals = ast.globals
-        .map(function (node, name) {
-            return name
-        })
-    return globals
-}
-
-/**
  * Take a self calling function, and unwrap it such that return inside the function
  * results in return outside the function
  *
@@ -76,41 +63,39 @@ function detect(src) {
 function unwrapReturns(src, result) {
   var originalSource = src
   var hasReturn = false
-  var ast = uglify.parse(src)
+  var ast = acorn.parse(src, {ecmaVersion: 6})
   var ref
   src = src.split('')
 
   // get a reference to the function that was inserted to add an inner context
   if ((ref = ast.body).length !== 1
-   || (ref = ref[0]).TYPE !== 'SimpleStatement'
-   || (ref = ref.body).TYPE !== 'Call'
-   || (ref = ref.expression).TYPE !== 'Dot' || ref.property !== 'call'
-   || (ref = ref.expression).TYPE !== 'Function')
+   || (ref = ref[0]).type !== 'ExpressionStatement'
+   || (ref = ref.expression).type !== 'CallExpression'
+   || (ref = ref.callee).type !== 'MemberExpression' || ref.computed !== false || ref.property.name !== 'call'
+   || (ref = ref.object).type !== 'FunctionExpression')
     throw new Error('AST does not seem to represent a self-calling function')
   var fn = ref
 
-  var walker = new uglify.TreeWalker(visitor)
-  function visitor(node, descend) {
-    if (node !== fn && (node.TYPE === 'Defun' || node.TYPE === 'Function')) {
-      return true //don't descend into functions
-    }
-    if (node.TYPE === 'Return') {
-      descend()
+  walk.recursive(ast, null, {
+    Function: function (node, st, c) {
+      if (node === fn) {
+        c(node.body, st, "ScopeBody");
+      }
+    },
+    ReturnStatement: function (node) {
       hasReturn = true
-      replace(node, 'return {value: ' + source(node.value) + '};')
-      return true //don't descend again
+      replace(node, 'return {value: ' + source(node.argument) + '};');
     }
-  }
+  });
   function source(node) {
-    return src.slice(node.start.pos, node.end.endpos).join('')
+    return src.slice(node.start, node.end).join('')
   }
   function replace(node, str) {
-    for (var i = node.start.pos; i < node.end.endpos; i++) {
+    for (var i = node.start; i < node.end; i++) {
       src[i] = ''
     }
-    src[node.start.pos] = str
+    src[node.start] = str
   }
-  ast.walk(walker)
   if (!hasReturn) return originalSource
   else return 'var ' + result + '=' + src.join('') + ';if (' + result + ') return ' + result + '.value'
 }
