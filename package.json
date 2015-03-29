@@ -13,7 +13,7 @@
   "author": "ForbesLindesay",
   "license": "MIT",
   "dependencies": {
-    "acorn": "^0.11.0",
+    "acorn": "^1.0.1",
     "acorn-globals": "^1.0.1"
   },
   "devDependencies": {

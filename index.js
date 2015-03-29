@@ -2,7 +2,13 @@
 
 var detect = require('acorn-globals');
 var acorn = require('acorn');
-var walk = require('acorn/util/walk');
+var walk = require('acorn/dist/walk');
+
+// polyfill for https://github.com/marijnh/acorn/pull/231
+walk.base.ExportNamedDeclaration = walk.base.ExportDefaultDeclaration = function (node, st, c) {
+  return c(node.declaration, st);
+};
+walk.base.ImportDefaultSpecifier = walk.base.ImportNamespaceSpecifier = function () {};
 
 module.exports = addWith
 
