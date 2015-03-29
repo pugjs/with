@@ -69,7 +69,11 @@ function addWith(obj, src, exclude) {
 function unwrapReturns(src, result) {
   var originalSource = src
   var hasReturn = false
-  var ast = acorn.parse(src, {ecmaVersion: 6})
+  var ast = acorn.parse(src, {
+    ecmaVersion: 6,
+    allowReturnOutsideFunction: true,
+    sourceType: 'module'
+  })
   var ref
   src = src.split('')
 
