@@ -10,6 +10,24 @@ walk.base.ExportNamedDeclaration = walk.base.ExportDefaultDeclaration = function
 };
 walk.base.ImportDefaultSpecifier = walk.base.ImportNamespaceSpecifier = function () {};
 
+// hacky fix for https://github.com/marijnh/acorn/issues/227
+function reallyParse(source) {
+  try {
+    return acorn.parse(source, {
+      ecmaVersion: 5,
+      allowReturnOutsideFunction: true
+    });
+  } catch (ex) {
+    if (ex.name !== 'SyntaxError') {
+      throw ex;
+    }
+    return acorn.parse(source, {
+      ecmaVersion: 6,
+      allowReturnOutsideFunction: true
+    });
+  }
+}
+
 module.exports = addWith
 
 /**
@@ -69,11 +87,7 @@ function addWith(obj, src, exclude) {
 function unwrapReturns(src, result) {
   var originalSource = src
   var hasReturn = false
-  var ast = acorn.parse(src, {
-    ecmaVersion: 6,
-    allowReturnOutsideFunction: true,
-    sourceType: 'module'
-  })
+  var ast = reallyParse(src)
   var ref
   src = src.split('')
 

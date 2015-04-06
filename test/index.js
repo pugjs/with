@@ -161,6 +161,21 @@ describe('addWith("obj", "var x = (y) => y + z; x(10);")', function () {
     done()
   })
 })
+
+describe('with reserved words', function () {
+  it('works just fine', function (done) {
+    var src = addWith('obj', 'console.log(yield)')
+    outputs.push(src)
+    Function('console,obj', src)(
+      {
+        log: function (a) {
+          assert(a === sentinel)
+          done()
+        }
+      },
+      {'yield': sentinel})
+  })
+})
 after(function () {
   function beautify(src) {
     try {
