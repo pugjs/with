@@ -45,6 +45,7 @@ function addWith(obj, src, exclude) {
   var vars = detect(src).map(function (global) { return global.name; })
     .filter(function (v) {
       return exclude.indexOf(v) === -1
+        && v !== 'undefined'
     })
 
   if (vars.length === 0) return src

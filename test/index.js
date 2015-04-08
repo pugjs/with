@@ -153,6 +153,15 @@ describe('addWith("obj || {}", "return this[foo]")', function () {
     assert(obj.fn(obj) === 'ding')
     done()
   })
+
+  it('does not pass `undefined` as an argument', function (done) {
+    var src = addWith('obj || {}', 'return this[foo]')
+    assert(!~src.indexOf('"undefined" in locals_for_with'))
+    assert(!~src.indexOf('locals_for_with.undefined'))
+    assert(!~src.indexOf('typeof undefined!=="undefined"?undefined:undefined'))
+    outputs.push(src)
+    done()
+  })
 })
 describe('addWith("obj", "var x = (y) => y + z; x(10);")', function () {
   it('keeps reference to this', function (done) {
