@@ -4,28 +4,12 @@ var detect = require('acorn-globals');
 var acorn = require('acorn');
 var walk = require('acorn/dist/walk');
 
-// polyfill for https://github.com/marijnh/acorn/pull/231
-walk.base.ExportNamedDeclaration = walk.base.ExportDefaultDeclaration = function (node, st, c) {
-  return c(node.declaration, st);
-};
-walk.base.ImportDefaultSpecifier = walk.base.ImportNamespaceSpecifier = function () {};
-
 // hacky fix for https://github.com/marijnh/acorn/issues/227
 function reallyParse(source) {
-  try {
-    return acorn.parse(source, {
-      ecmaVersion: 5,
-      allowReturnOutsideFunction: true
-    });
-  } catch (ex) {
-    if (ex.name !== 'SyntaxError') {
-      throw ex;
-    }
-    return acorn.parse(source, {
-      ecmaVersion: 6,
-      allowReturnOutsideFunction: true
-    });
-  }
+  return acorn.parse(source, {
+    ecmaVersion: 6,
+    allowReturnOutsideFunction: true
+  });
 }
 
 module.exports = addWith
