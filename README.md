@@ -3,8 +3,8 @@
 Compile time `with` for strict mode JavaScript
 
 [![build status](https://secure.travis-ci.org/ForbesLindesay/with.png)](http://travis-ci.org/ForbesLindesay/with)
-[![Dependency Status](https://img.shields.io/gemnasium/ForbesLindesay/with.svg)](https://gemnasium.com/ForbesLindesay/with)
-[![NPM version](https://img.shields.io/npm/v/with.svg)](http://badge.fury.io/js/with)
+[![Dependency Status](https://img.shields.io/david/ForbesLindesay/with.svg)](https://david-dm.org/ForbesLindesay/with)
+[![NPM version](https://img.shields.io/npm/v/with.svg)](https://www.npmjs.com/package/with)
 
 ## Installation
 
