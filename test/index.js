@@ -132,7 +132,7 @@ describe('addWith("obj || {}", "return foo")', function () {
     var obj = {
       foo: 'ding'
     }
-    assert(Function('obj', src)(obj) === undefined)
+    assert(Function('obj', src + 'throw new Error("but we returned")')(obj) === undefined)
     done()
   })
   it('supports returning undefined', function (done) {
