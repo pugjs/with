@@ -30,6 +30,7 @@ function addWith(obj, src, exclude) {
     .filter(function (v) {
       return exclude.indexOf(v) === -1
         && v !== 'undefined'
+        && v !== 'this'
     })
 
   if (vars.length === 0) return src
@@ -72,7 +73,12 @@ function addWith(obj, src, exclude) {
 function unwrapReturns(src, result) {
   var originalSource = src
   var hasReturn = false
+  try {
   var ast = reallyParse(src)
+} catch (ex) {
+  console.log(src);
+  throw ex;
+}
   var ref
   src = src.split('')
 
