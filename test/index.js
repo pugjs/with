@@ -126,6 +126,15 @@ describe('addWith("obj || {}", "return foo")', function () {
     assert(Function('obj', src)(obj) === 'ding')
     done()
   })
+  it('supports returning without argument', function (done) {
+    var src = addWith('obj || {}', 'return; return foo')
+    outputs.push(src)
+    var obj = {
+      foo: 'ding'
+    }
+    assert(Function('obj', src + 'throw new Error("but we returned")')(obj) === undefined)
+    done()
+  })
   it('supports returning undefined', function (done) {
     var src = addWith('obj || {}', 'return foo')
     outputs.push(src)
@@ -136,6 +145,19 @@ describe('addWith("obj || {}", "return foo")', function () {
     var src = addWith('obj || {}', 'if (false) return foo')
     outputs.push(src)
     assert(Function('obj', src + ';return "ding"')({}) === 'ding')
+    done()
+  })
+})
+
+describe('addWith("obj || {}", "return foo, bar")', function () {
+  it('returns bar', function (done) {
+    var src = addWith('obj || {}', 'return foo, bar')
+    outputs.push(src)
+    var obj = {
+      foo: 'ding',
+      bar: 'dong',
+    }
+    assert(Function('obj', src)(obj) === 'dong')
     done()
   })
 })

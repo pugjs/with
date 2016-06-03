@@ -92,8 +92,8 @@ function unwrapReturns(src, result) {
       }
     },
     ReturnStatement: function (node) {
-      hasReturn = true
-      replace(node, 'return {value: ' + source(node.argument) + '};');
+      hasReturn = true;
+      replace(node, 'return {value: (' + (node.argument ? source(node.argument) : 'undefined') + ')};');
     }
   });
   function source(node) {
