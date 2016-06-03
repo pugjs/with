@@ -149,6 +149,19 @@ describe('addWith("obj || {}", "return foo")', function () {
   })
 })
 
+describe('addWith("obj || {}", "return foo, bar")', function () {
+  it('returns bar', function (done) {
+    var src = addWith('obj || {}', 'return foo, bar')
+    outputs.push(src)
+    var obj = {
+      foo: 'ding',
+      bar: 'dong',
+    }
+    assert(Function('obj', src)(obj) === 'dong')
+    done()
+  })
+})
+
 describe('addWith("obj || {}", "return this[foo]")', function () {
   it('keeps reference to this', function (done) {
     var src = addWith('obj || {}', 'return this[foo]')
