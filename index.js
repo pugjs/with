@@ -108,8 +108,10 @@ function unwrapReturns(src, result) {
       }
     },
     ReturnStatement: function (node) {
-      hasReturn = true
-      replace(node, 'return {value: ' + source(node.argument) + '};');
+      hasReturn = true;
+      if (node.argument) {
+        replace(node, 'return {value: ' + source(node.argument) + '};');
+      }
     }
   });
   function source(node) {
