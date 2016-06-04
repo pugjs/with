@@ -73,12 +73,7 @@ function addWith(obj, src, exclude) {
 function unwrapReturns(src, result) {
   var originalSource = src
   var hasReturn = false
-  try {
   var ast = reallyParse(src)
-} catch (ex) {
-  console.log(src);
-  throw ex;
-}
   var ref
   src = src.split('')
 
