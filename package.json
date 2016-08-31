@@ -2,9 +2,10 @@
   "name": "with",
   "version": "5.1.1",
   "description": "Compile time `with` for strict mode JavaScript",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
-    "test": "mocha test/index.js -R spec"
+    "prepublish": "babel -d lib src",
+    "test": "babel-node node_modules/mocha/bin/_mocha test/index.js -R spec"
   },
   "repository": {
     "type": "git",
@@ -13,10 +14,16 @@
   "author": "ForbesLindesay",
   "license": "MIT",
   "dependencies": {
-    "acorn": "^3.1.0",
-    "acorn-globals": "^3.0.0"
+    "babel-runtime": "^6.11.6",
+    "babel-types": "^6.15.0",
+    "babylon": "^6.9.1",
+    "babylon-walk": "^1.0.2"
   },
   "devDependencies": {
+    "babel-cli": "^6.14.0",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-transform-runtime": "^6.15.0",
+    "babel-preset-es2015": "^6.14.0",
     "mocha": "*",
     "uglify-js": "^2.6.2"
   }

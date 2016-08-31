@@ -1,7 +1,7 @@
 var assert = require('assert')
 var fs = require('fs')
 var uglify = require('uglify-js')
-var addWith = require('../')
+var addWith = require('../src')
 
 var outputs = []
 
@@ -102,7 +102,7 @@ describe('addWith("obj || {}", "console.log(\'foo\')")', function () {
 })
 
 describe('addWith("obj || {}", "obj.foo")', function () {
-  it('passes through', function (done) {
+  it('passes through', function () {
     var src = addWith('obj || {}', 'obj.bar = obj.foo')
     outputs.push(src)
     // obj.bar = obj.foo
@@ -111,12 +111,11 @@ describe('addWith("obj || {}", "obj.foo")', function () {
       }
     Function('obj', src)(obj)
     assert(obj.bar === 'ding')
-    done()
   })
 })
 
 describe('addWith("obj || {}", "return foo")', function () {
-  it('supports returning values', function (done) {
+  it('supports returning values', function () {
     var src = addWith('obj || {}', 'return foo')
     outputs.push(src)
     // obj.bar = obj.foo
@@ -124,33 +123,37 @@ describe('addWith("obj || {}", "return foo")', function () {
         foo: 'ding'
       }
     assert(Function('obj', src)(obj) === 'ding')
-    done()
   })
-  it('supports returning without argument', function (done) {
+  it('supports returning without argument', function () {
     var src = addWith('obj || {}', 'return; return foo')
     outputs.push(src)
     var obj = {
       foo: 'ding'
     }
     assert(Function('obj', src + 'throw new Error("but we returned")')(obj) === undefined)
-    done()
   })
-  it('supports returning undefined', function (done) {
+  it('supports returning undefined', function () {
     var src = addWith('obj || {}', 'return foo')
     outputs.push(src)
     assert(Function('obj', src + ';return "ding"')({}) === undefined)
-    done()
   })
-  it('supports not actually returning', function (done) {
+  it('supports not actually returning', function () {
     var src = addWith('obj || {}', 'if (false) return foo')
     outputs.push(src)
     assert(Function('obj', src + ';return "ding"')({}) === 'ding')
-    done()
+  })
+  it('supports returning in a child function', function () {
+    var src = addWith('obj || {}', 'var a = function () { return foo; }; return a()')
+    outputs.push(src)
+    var obj = {
+      foo: 'ding'
+    }
+    assert(Function('obj', src + ';throw new Error("but we returned")')(obj) === 'ding')
   })
 })
 
 describe('addWith("obj || {}", "return foo, bar")', function () {
-  it('returns bar', function (done) {
+  it('returns bar', function () {
     var src = addWith('obj || {}', 'return foo, bar')
     outputs.push(src)
     var obj = {
@@ -158,12 +161,11 @@ describe('addWith("obj || {}", "return foo, bar")', function () {
       bar: 'dong',
     }
     assert(Function('obj', src)(obj) === 'dong')
-    done()
   })
 })
 
 describe('addWith("obj || {}", "return this[foo]")', function () {
-  it('keeps reference to this', function (done) {
+  it('keeps reference to this', function () {
     var src = addWith('obj || {}', 'return this[foo]')
     outputs.push(src)
     // obj.bar = obj.foo
@@ -173,23 +175,20 @@ describe('addWith("obj || {}", "return this[foo]")', function () {
         fn: Function('obj', src)
       }
     assert(obj.fn(obj) === 'ding')
-    done()
   })
 
-  it('does not pass `undefined` as an argument', function (done) {
+  it('does not pass `undefined` as an argument', function () {
     var src = addWith('obj || {}', 'return this[foo]')
     assert(!~src.indexOf('"undefined" in locals_for_with'))
     assert(!~src.indexOf('locals_for_with.undefined'))
     assert(!~src.indexOf('typeof undefined!=="undefined"?undefined:undefined'))
     outputs.push(src)
-    done()
   })
 })
 describe('addWith("obj", "var x = (y) => y + z; x(10);")', function () {
-  it('keeps reference to this', function (done) {
+  it('keeps reference to this', function () {
     var src = addWith('obj', 'var x = (y) => y + z; x(10);')
     outputs.push(src)
-    done()
   })
 })
 
