@@ -21,8 +21,24 @@ export default function addWith(obj, src, exclude = []) {
   obj = obj + '';
   src = src + '';
 
-  const ast = parse(src, parseOptions);
-  const objAst = parse(obj, parseOptions);
+  let ast;
+  try {
+    ast = parse(src, parseOptions);
+  } catch(e) {
+    throw Object.assign(new Error('Error parsing body of the with expression'), {
+      component: 'src',
+      babylonError: e
+    });
+  }
+  let objAst;
+  try {
+    objAst = parse(obj, parseOptions);
+  } catch(e) {
+    throw Object.assign(new Error('Error parsing object part of the with expression'), {
+      component: 'obj',
+      babylonError: e
+    });
+  }
   exclude = new Set([
     'undefined',
     'this',

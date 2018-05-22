@@ -7,6 +7,15 @@ var outputs = []
 
 var sentinel = {}
 var sentinel2 = {}
+
+function tryCatch(block) {
+  try {
+    return {result: 'returned', value: block()}
+  } catch(e) {
+    return {result: 'threw', error: e}
+  }
+}
+
 describe('addWith("obj", "console.log(a)")', function () {
   it('adds the necessary variable declarations', function (done) {
     var src = addWith('obj', 'console.log(a)')
@@ -206,6 +215,31 @@ describe('with reserved words', function () {
       {'yield': sentinel})
   })
 })
+
+describe('with JS syntax error', function () {
+  function spec(obj, body, assertions) {
+    it('exposes error location information', function () {
+      var {result, error} = tryCatch(function () {
+        return addWith(obj, body);
+      })
+      assert(result === 'threw')
+      assertions(error)
+    })
+  }
+  describe('in the obj', function () {
+    spec('syntax error', '1 + 1;', function (error) {
+      assert(error.component === 'obj')
+      assert(error.babylonError.pos === 7)
+    })
+  })
+  describe('in the body', function () {
+    spec('1 + 1', 'syntax error', function (error) {
+      assert(error.component === 'src')
+      assert(error.babylonError.pos === 7)
+    })
+  })
+})
+
 after(function () {
   function beautify(src) {
     try {
