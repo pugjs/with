@@ -76,6 +76,12 @@ This is not the case if foo is in `exclude`.  If a variable is excluded, we igno
 
 It is also safe to use in strict mode (unlike `with`) and it minifies properly (`with` disables virtually all minification).
 
+#### Parsing Errors
+
+with internally uses babylon to parse code passed to `addWith`.  If babylon throws an error, probably due to a syntax error, `addWith` returns an error wrapping the babylon error, so you can
+retrieve location information.  `error.component` is `"src"` if the error is in the body or `"obj"` if it's in the object part of the with expression.  `error.babylonError` is
+the error thrown from babylon.
+
 ## License
 
   MIT
