@@ -2,7 +2,7 @@
 
 Compile time `with` for strict mode JavaScript
 
-[![build status](https://secure.travis-ci.org/pugjs/with.png)](http://travis-ci.org/pugjs/with)
+[![build status](https://img.shields.io/travis/pugjs/with.svg)](http://travis-ci.org/pugjs/with)
 [![Dependency Status](https://img.shields.io/david/pugjs/with.svg)](https://david-dm.org/pugjs/with)
 [![NPM version](https://img.shields.io/npm/v/with.svg)](https://www.npmjs.com/package/with)
 
