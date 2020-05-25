@@ -1,7 +1,7 @@
 var assert = require('assert')
 var fs = require('fs')
 var uglify = require('uglify-js')
-var addWith = require('../src')
+var addWith = require('../')
 
 var outputs = []
 
