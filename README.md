@@ -2,9 +2,9 @@
 
 Compile time `with` for strict mode JavaScript
 
-[![build status](https://img.shields.io/travis/pugjs/with.svg)](http://travis-ci.org/pugjs/with)
-[![Dependency Status](https://img.shields.io/david/pugjs/with.svg)](https://david-dm.org/pugjs/with)
-[![NPM version](https://img.shields.io/npm/v/with.svg)](https://www.npmjs.com/package/with)
+[![Build Status](https://img.shields.io/github/workflow/status/pugjs/with/Publish%20Canary/master?style=for-the-badge)](https://github.com/pugjs/with/actions?query=workflow%3A%22Publish+Canary%22)
+[![Rolling Versions](https://img.shields.io/badge/Rolling%20Versions-Enabled-brightgreen?style=for-the-badge)](https://rollingversions.com/pugjs/with)
+[![NPM version](https://img.shields.io/npm/v/with?style=for-the-badge)](https://www.npmjs.com/package/with)
 
 ## Installation
 
@@ -13,9 +13,9 @@ Compile time `with` for strict mode JavaScript
 ## Usage
 
 ```js
-var addWith = require('with')
+var addWith = require('with');
 
-addWith('obj', 'console.log(a)')
+addWith('obj', 'console.log(a)');
 // => ';(function (console, a) {
 //       console.log(a)
 //     }("console" in obj ? obj.console :
@@ -23,7 +23,7 @@ addWith('obj', 'console.log(a)')
 //       "a" in obj ? obj.a :
 //                    typeof a !== "undefined" ? a : undefined));'
 
-addWith('obj', 'console.log(a)', ['console'])
+addWith('obj', 'console.log(a)', ['console']);
 // => ';(function (console, a) {
 //       console.log(a)
 //     }("a" in obj ? obj.a :
@@ -38,26 +38,26 @@ The idea is that this is roughly equivallent to:
 
 ```js
 with (obj) {
-  src
+  src;
 }
 ```
 
-There are a few differences though.  For starters, assignments to variables will always remain contained within the with block.
+There are a few differences though. For starters, assignments to variables will always remain contained within the with block.
 
 e.g.
 
 ```js
-var foo = 'foo'
+var foo = 'foo';
 with ({}) {
-  foo = 'bar'
+  foo = 'bar';
 }
-assert(foo === 'bar')// => This fails for compile time with but passes for native with
+assert(foo === 'bar'); // => This fails for compile time with but passes for native with
 
-var obj = {foo: 'foo'}
+var obj = {foo: 'foo'};
 with ({}) {
-  foo = 'bar'
+  foo = 'bar';
 }
-assert(obj.foo === 'bar')// => This fails for compile time with but passes for native with
+assert(obj.foo === 'bar'); // => This fails for compile time with but passes for native with
 ```
 
 It also makes everything be declared, so you can always do:
@@ -72,16 +72,16 @@ instead of
 if (typeof foo === 'undefined')
 ```
 
-This is not the case if foo is in `exclude`.  If a variable is excluded, we ignore it entirely.  This is useful if you know a variable will be global as it can lead to efficiency improvements.
+This is not the case if foo is in `exclude`. If a variable is excluded, we ignore it entirely. This is useful if you know a variable will be global as it can lead to efficiency improvements.
 
 It is also safe to use in strict mode (unlike `with`) and it minifies properly (`with` disables virtually all minification).
 
 #### Parsing Errors
 
-with internally uses babylon to parse code passed to `addWith`.  If babylon throws an error, probably due to a syntax error, `addWith` returns an error wrapping the babylon error, so you can
-retrieve location information.  `error.component` is `"src"` if the error is in the body or `"obj"` if it's in the object part of the with expression.  `error.babylonError` is
+with internally uses babylon to parse code passed to `addWith`. If babylon throws an error, probably due to a syntax error, `addWith` returns an error wrapping the babylon error, so you can
+retrieve location information. `error.component` is `"src"` if the error is in the body or `"obj"` if it's in the object part of the with expression. `error.babylonError` is
 the error thrown from babylon.
 
 ## License
 
-  MIT
+MIT

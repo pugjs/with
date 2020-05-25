@@ -1,6 +1,6 @@
-import * as t from 'babel-types';
+import * as t from '@babel/types';
 
-export default function isReferenced(node, parent) {
+export default function isReferenced(node: t.Node, parent: t.Node) {
   switch (parent.type) {
     // yes: { [NODE]: '' }
     // yes: { NODE }
