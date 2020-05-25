@@ -1,5 +1,5 @@
-import {ancestor as walk} from 'babylon-walk';
-import * as t from 'babel-types';
+import { ancestor as walk } from 'babylon-walk';
+import * as t from '@babel/types';
 import isReferenced from './reference.js';
 
 const isScope = t.isFunctionParent;
@@ -142,5 +142,5 @@ export default function findGlobals(ast) {
     groupedGlobals[name] = groupedGlobals[name] || [];
     groupedGlobals[name].push(node);
   }
-  return Object.keys(groupedGlobals).sort().map(name => ({name, nodes: groupedGlobals[name]}));
+  return Object.keys(groupedGlobals).sort().map(name => ({ name, nodes: groupedGlobals[name] }));
 }

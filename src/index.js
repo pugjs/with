@@ -1,6 +1,6 @@
-import {parse} from 'babylon';
-import {recursive as walk} from 'babylon-walk';
-import * as t from 'babel-types';
+import { parse } from '@babel/parser';
+import { recursive as walk } from 'babylon-walk';
+import * as t from '@babel/types';
 import detect from './globals.js';
 
 const includes = (array, searchElement, fromIndex) => Array.prototype.includes.call(array, searchElement, fromIndex);
@@ -24,7 +24,7 @@ export default function addWith(obj, src, exclude = []) {
   let ast;
   try {
     ast = parse(src, parseOptions);
-  } catch(e) {
+  } catch (e) {
     throw Object.assign(new Error('Error parsing body of the with expression'), {
       component: 'src',
       babylonError: e
@@ -33,7 +33,7 @@ export default function addWith(obj, src, exclude = []) {
   let objAst;
   try {
     objAst = parse(obj, parseOptions);
-  } catch(e) {
+  } catch (e) {
     throw Object.assign(new Error('Error parsing object part of the with expression'), {
       component: 'obj',
       babylonError: e
