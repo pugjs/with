@@ -2,9 +2,10 @@
 
 Compile time `with` for strict mode JavaScript
 
-[![build status](https://img.shields.io/travis/pugjs/with.svg)](http://travis-ci.org/pugjs/with)
-[![Dependency Status](https://img.shields.io/david/pugjs/with.svg)](https://david-dm.org/pugjs/with)
-[![NPM version](https://img.shields.io/npm/v/with.svg)](https://www.npmjs.com/package/with)
+
+[![Build Status](https://img.shields.io/github/workflow/status/pugjs/with/Publish%20Canary/master?style=for-the-badge)](https://github.com/pugjs/with/actions?query=workflow%3A%22Publish+Canary%22)
+[![Rolling Versions](https://img.shields.io/badge/Rolling%20Versions-Enabled-brightgreen?style=for-the-badge)](https://rollingversions.com/pugjs/with)
+[![NPM version](https://img.shields.io/npm/v/with?style=for-the-badge)](https://www.npmjs.com/package/with)
 
 ## Installation
 
