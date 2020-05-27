@@ -3,7 +3,7 @@ import {ancestor as walk} from 'babel-walk';
 import * as t from '@babel/types';
 import isReferenced from './reference';
 
-const isScope = t.isFunctionParent;
+const isScope = (node: t.Node) => t.isFunctionParent(node) || t.isProgram(node);
 const isBlockScope = (node: t.Node) =>
   t.isBlockStatement(node) || isScope(node);
 
