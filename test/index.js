@@ -218,6 +218,16 @@ describe('addWith("obj", "var x = (y) => y + z; x(10);")', function () {
   });
 });
 
+describe('addWith("obj", "const x = 10; console.log(x)', function () {
+  it('does not delcare x', function () {
+    var src = addWith('obj', 'const x = 10; console.log(x)');
+    var result;
+    Function('obj', src)({console: {log: (v) => (result = v)}});
+    outputs.push(src);
+    assert(result === 10);
+  });
+});
+
 describe('with reserved words', function () {
   it('works just fine', function (done) {
     var src = addWith('obj', 'console.log(yield)');
