@@ -128,7 +128,9 @@ const unwrapReturnsVisitors = walk<UnwrapReturnsState>({
  * @param result A temporary variable to store the result in
  */
 function unwrapReturns(ast: t.Node, src: string, result: string) {
-  const charArray = src.split('');
+  // Splitting a large source into characters and joining it back is slow,
+  // so it is only done once there is a return statement to replace
+  let charArray: string[] | undefined;
 
   const state: UnwrapReturnsState = {
     hasReturn: false,
@@ -136,6 +138,7 @@ function unwrapReturns(ast: t.Node, src: string, result: string) {
       return src.slice(node.start!, node.end!);
     },
     replace(node, str) {
+      if (!charArray) charArray = src.split('');
       charArray.fill('', node.start!, node.end!);
       charArray[node.start!] = str;
     },
@@ -145,7 +148,7 @@ function unwrapReturns(ast: t.Node, src: string, result: string) {
 
   return {
     before: state.hasReturn ? `var ${result} = ` : '',
-    body: charArray.join(''),
+    body: charArray ? charArray.join('') : src,
     after: state.hasReturn ? `;if (${result}) return ${result}.value` : '',
   };
 }
